@@ -145,8 +145,6 @@ function get_all_repo_names
 
   p=1
   while [ "$p" -le "$total" ]; do
-    xx=`curl -s "$URL?page=$p&per_page=$PAGE_NUM"`
-    echo $xx
     x=`curl -s "$URL?page=$p&per_page=$PAGE_NUM" | jq '.[] | .name' |  sed 's/"//g'`
     echo $x
     p=$(($p + 1))
