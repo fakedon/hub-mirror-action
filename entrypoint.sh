@@ -150,7 +150,7 @@ function get_all_repo_names
     if [ ! -f "$CACHE_DST_REPOS" ]; then
       curl -s "$URL?page=$p&per_page=$PAGE_NUM" > $CACHE_DST_REPOS
     fi
-    x = `jq '.[] | .name' "$CACHE_DST_REPOS" |  sed 's/"//g'`
+    x=$(jq '.[] | .name' "$CACHE_DST_REPOS" |  sed 's/"//g')
     echo $x
     p=$(($p + 1))
   done
