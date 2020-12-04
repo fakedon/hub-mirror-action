@@ -72,9 +72,9 @@ function delay_exit {
 # fi
 
 if [[ "$SRC_ACCOUNT_TYPE" == "org" ]]; then
-  SRC_LIST_URL_SUFFIX=orgs/$SRC_ACCOUNT_TYPE/repos
+  SRC_LIST_URL_SUFFIX=orgs/$SRC_ACCOUNT/repos
 elif [[ "$SRC_ACCOUNT_TYPE" == "user" ]]; then
-  SRC_LIST_URL_SUFFIX=users/$SRC_ACCOUNT_TYPE/repos
+  SRC_LIST_URL_SUFFIX=users/$SRC_ACCOUNT/repos
 else
   err_exit "Unknown source account type, the `src_account_type` should be `user` or `org`"
 fi
