@@ -208,8 +208,8 @@ function create_repo
 function update_repo
 {
   echo -e "\033[31m(1/3)\033[0m" "Updating..."
-  git fetch tmp_upstream --quiet
-#   retry git pull -p
+#   git fetch tmp_upstream --quiet
+  retry git pull -p tmp_upstream
 }
 
 function import_repo
