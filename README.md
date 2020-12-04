@@ -40,6 +40,10 @@ steps:
 - `static_list` 默认为'', 配置后，仅同步静态列表，不会再动态获取需同步列表（黑白名单机制依旧生效），如“repo1,repo2,repo3”。
 - `force_update` 默认为false, 配置后，启用git push -f强制同步，**注意：开启后，会强制覆盖目的端仓库**。
 - `debug` 默认为false, 配置后，启用debug开关，会显示所有执行命令。
+- `rename_dst` 默认为false，配置后，启用更改目的端仓库名。
+- `rename_fmt` 默认为''，配置后，比prefix_dst/suffix_dst更高优先级，启用sed正则替换规则更改目的端仓库名。
+- `prefix_dst` 默认为'', 配置后，目的端仓库名添加前缀，如“prefix_dst_repo”。
+- `suffix_dst` 默认为''，配置后，目的端仓库名添加后缀，如“suffix_dst_repo”。
 
 ## 举些例子
 
