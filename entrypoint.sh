@@ -15,7 +15,9 @@ DST_TOKEN="${INPUT_DST_TOKEN}"
 SRC_HUB="${INPUT_SRC}"
 DST_HUB="${INPUT_DST}"
 
-ACCOUNT_TYPE="${INPUT_ACCOUNT_TYPE}"
+# ACCOUNT_TYPE="${INPUT_ACCOUNT_TYPE}"
+SRC_ACCOUNT_TYPE="${INPUT_SRC_ACCOUNT_TYPE}"
+DST_ACCOUNT_TYPE="${INPUT_DST_ACCOUNT_TYPE}"
 
 SRC_TYPE=`dirname $SRC_HUB`
 DST_TYPE=`dirname $DST_HUB`
@@ -57,17 +59,36 @@ function delay_exit {
   return 1
 }
 
-if [[ "$ACCOUNT_TYPE" == "org" ]]; then
-  SRC_LIST_URL_SUFFIX=orgs/$SRC_ACCOUNT/repos
+# if [[ "$ACCOUNT_TYPE" == "org" ]]; then
+#   SRC_LIST_URL_SUFFIX=orgs/$SRC_ACCOUNT/repos
+#   DST_LIST_URL_SUFFIX=orgs/$DST_ACCOUNT/repos
+#   DST_CREATE_URL_SUFFIX=orgs/$DST_ACCOUNT/repos
+# elif [[ "$ACCOUNT_TYPE" == "user" ]]; then
+#   SRC_LIST_URL_SUFFIX=users/$SRC_ACCOUNT/repos
+#   DST_LIST_URL_SUFFIX=users/$DST_ACCOUNT/repos
+#   DST_CREATE_URL_SUFFIX=user/repos
+# else
+#   err_exit "Unknown account type, the `account_type` should be `user` or `org`"
+# fi
+
+if [[ "$SRC_ACCOUNT_TYPE" == "org" ]]; then
+  SRC_LIST_URL_SUFFIX=orgs/$SRC_ACCOUNT_TYPE/repos
+elif [[ "$SRC_ACCOUNT_TYPE" == "user" ]]; then
+  SRC_LIST_URL_SUFFIX=users/$SRC_ACCOUNT_TYPE/repos
+else
+  err_exit "Unknown source account type, the `src_account_type` should be `user` or `org`"
+fi
+
+if [[ "$DST_ACCOUNT_TYPE" == "org" ]]; then
   DST_LIST_URL_SUFFIX=orgs/$DST_ACCOUNT/repos
   DST_CREATE_URL_SUFFIX=orgs/$DST_ACCOUNT/repos
-elif [[ "$ACCOUNT_TYPE" == "user" ]]; then
-  SRC_LIST_URL_SUFFIX=users/$SRC_ACCOUNT/repos
+elif [[ "$DST_ACCOUNT_TYPE" == "user" ]]; then
   DST_LIST_URL_SUFFIX=users/$DST_ACCOUNT/repos
   DST_CREATE_URL_SUFFIX=user/repos
 else
-  err_exit "Unknown account type, the `account_type` should be `user` or `org`"
+  err_exit "Unknown destination account type, the `dst_account_type` should be `user` or `org`"
 fi
+
 
 if [[ "$SRC_TYPE" == "github" ]]; then
   SRC_REPO_LIST_API=https://api.github.com/$SRC_LIST_URL_SUFFIX
