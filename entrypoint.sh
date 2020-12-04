@@ -184,6 +184,7 @@ function clone_repo
     retry git clone $SRC_REPO_BASE_URL$SRC_ACCOUNT/$1.git
   fi
   cd $1
+  git remote --verbose
   git config --unset-all http."https://github.com/".extraheader || :
 #   git remote set-url origin "https://github.com/$DST_ACCOUNT/$1.git"
   git remote add tmp_upstream $SRC_REPO_BASE_URL$SRC_ACCOUNT/$1.git
