@@ -186,7 +186,7 @@ function clone_repo
   cd $1
   git config --unset-all http."https://github.com/".extraheader || :
 #   git remote set-url origin "https://github.com/$DST_ACCOUNT/$1.git"
-  git remote add upstream $SRC_REPO_BASE_URL$SRC_ACCOUNT/$1.git
+  git remote add tmp_upstream $SRC_REPO_BASE_URL$SRC_ACCOUNT/$1.git
 }
 
 function create_repo
@@ -207,7 +207,7 @@ function create_repo
 function update_repo
 {
   echo -e "\033[31m(1/3)\033[0m" "Updating..."
-  git fetch upstream --quiet
+  git fetch tmp_upstream --quiet
 #   retry git pull -p
 }
 
@@ -220,6 +220,7 @@ function import_repo
   else
     retry git push $DST_TYPE refs/remotes/origin/*:refs/heads/* --tags --prune
   fi
+  git remote rm tmp_upstream
 }
 
 function _check_in_list () {
