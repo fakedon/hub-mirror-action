@@ -148,6 +148,9 @@ function get_all_repo_names
   p=1
   while [ "$p" -le "$total" ]; do
     if [ ! -f "$CACHE_DST_REPOS" ]; then
+      if [ ! -d "$CACHE_ACTIONS_PATH" ]; then
+        mkdir -p $CACHE_ACTIONS_PATH
+      fi
       curl -s "$URL?page=$p&per_page=$PAGE_NUM" > $CACHE_DST_REPOS
     fi
     x=$(jq '.[] | .name' "$CACHE_DST_REPOS" |  sed 's/"//g')
