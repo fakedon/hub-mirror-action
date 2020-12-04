@@ -17,8 +17,14 @@ inputs:
   src:
     description: "Source name. Such as `github/kunpengcompute`."
     required: true
-  account_type:
-    description: "The account type. Such as org, user."
+#   account_type:
+#     description: "The account type. Such as org, user."
+#     default: 'user'
+  src_account_type:
+    description: "The source account type. Such as org, user."
+    default: 'user'
+  dst_account_type:
+    description: "The destination account type. Such as org, user."
     default: 'user'
   clone_style:
     description: "The git clone style, https or ssh."
@@ -64,7 +70,9 @@ runs:
     - ${{ inputs.dst_token }}
     - ${{ inputs.src }}
     - ${{ inputs.dst }}
-    - ${{ inputs.account_type }}
+#     - ${{ inputs.account_type }}
+    - ${{ inputs.src_account_type }}
+    - ${{ inputs.dst_account_type }}
     - ${{ inputs.clone_style }}
     - ${{ inputs.cache_path }}
     - ${{ inputs.black_list }}
