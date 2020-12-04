@@ -181,9 +181,12 @@ function clone_repo
 {
   echo -e "\033[31m(0/3)\033[0m" "Downloading..."
   if [ ! -d "$1" ]; then
-    retry git clone $SRC_REPO_BASE_URL$SRC_ACCOUNT/$1.git --origin source
+    retry git clone $SRC_REPO_BASE_URL$SRC_ACCOUNT/$1.git
   fi
   cd $1
+  git config --unset-all http."https://github.com/".extraheader || :
+#   git remote set-url origin "https://github.com/$DST_ACCOUNT/$1.git"
+  git remote add upstream $SRC_REPO_BASE_URL$SRC_ACCOUNT/$1.git
 }
 
 function create_repo
@@ -198,15 +201,13 @@ function create_repo
       curl -s -X POST --header 'Content-Type: application/json;charset=UTF-8' $DST_REPO_CREATE_API -d '{"name": "'$1'","access_token": "'$2'"}' > /dev/null
     fi
   fi
-  
-  git remote add destination git@$DST_TYPE.com:$DST_ACCOUNT/$1.git || echo "Remote already exists."
-#   git remote add $DST_TYPE git@$DST_TYPE.com:$DST_ACCOUNT/$1.git || echo "Remote already exists."
+  git remote add $DST_TYPE git@$DST_TYPE.com:$DST_ACCOUNT/$1.git || echo "Remote already exists."
 }
 
 function update_repo
 {
   echo -e "\033[31m(1/3)\033[0m" "Updating..."
-  git fetch source '+refs/heads/*:refs/heads/*' --update-head-ok
+  git fetch upstream --quiet
 #   retry git pull -p
 }
 
@@ -215,11 +216,9 @@ function import_repo
   echo -e "\033[31m(2/3)\033[0m" "Importing..."
   git remote set-head origin -d
   if [[ "$FORCE_UPDATE" == "true" ]]; then
-    retry git push -f destination refs/remotes/origin/*:refs/heads/* --tags --prune
-#     retry git push -f $DST_TYPE refs/remotes/origin/*:refs/heads/* --tags --prune
+    retry git push -f $DST_TYPE refs/remotes/origin/*:refs/heads/* --tags --prune
   else
-    retry git push destination refs/remotes/origin/*:refs/heads/* --tags --prune
-#     retry git push $DST_TYPE refs/remotes/origin/*:refs/heads/* --tags --prune
+    retry git push $DST_TYPE refs/remotes/origin/*:refs/heads/* --tags --prune
   fi
 }
 
