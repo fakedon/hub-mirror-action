@@ -28,6 +28,8 @@ DST_ACCOUNT=`basename $DST_HUB`
 CLONE_STYLE="${INPUT_CLONE_STYLE}"
 
 CACHE_PATH="${INPUT_CACHE_PATH}"
+CACHE_ACTIONS_PATH="${GITHUB_WORKSPACE%%/}/.cache/"
+CACHE_DST_REPOS="${CACHE_ACTIONS_PATH%%/}/dst_repos"
 
 WHITE_LIST="${INPUT_WHITE_LIST}"
 BLACK_LIST="${INPUT_BLACK_LIST}"
@@ -145,7 +147,10 @@ function get_all_repo_names
 
   p=1
   while [ "$p" -le "$total" ]; do
-    x=`curl -s "$URL?page=$p&per_page=$PAGE_NUM" | jq '.[] | .name' |  sed 's/"//g'`
+    if [ ! -f "$CACHE_DST_REPOS" ]; then
+      curl -s "$URL?page=$p&per_page=$PAGE_NUM" > $CACHE_DST_REPOS
+    fi
+    x = `jq '.[] | .name' "$CACHE_DST_REPOS" |  sed 's/"//g'`
     echo $x
     p=$(($p + 1))
   done
@@ -241,6 +246,10 @@ if [ ! -d "$CACHE_PATH" ]; then
   mkdir -p $CACHE_PATH
 fi
 cd $CACHE_PATH
+
+if [ ! -d "$CACHE_ACTIONS_PATH" ]; then
+  mkdir -p $CACHE_ACTIONS_PATH
+fi
 
 all=0
 success=0
