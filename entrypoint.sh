@@ -31,6 +31,11 @@ WHITE_LIST="${INPUT_WHITE_LIST}"
 BLACK_LIST="${INPUT_BLACK_LIST}"
 STATIC_LIST="${INPUT_STATIC_LIST}"
 
+RENAME_DST="${INPUT_RENAME_DST}"
+RENAME_FMT="${INPUT_RENAME_FMT}"
+PREFIX_DST="${INPUT_PREFIX_DST}"
+SUFFIX_DST="${INPUT_SUFFIX_DST}"
+
 FORCE_UPDATE="${INPUT_FORCE_UPDATE}"
 
 DELAY_EXIT=false
@@ -228,12 +233,28 @@ for repo in $SRC_REPOS
     cd $CACHE_PATH
 
     clone_repo $repo || delay_exit "clone and cd failed"  $repo || continue
+    
+    dst_repo=$repo
+    if [[ "$RENAME_DST" == "true" ]]; then
+      if [[ "$RENAME_FMT" ]]; then
+        dst_repo=$(echo "$dst_repo" | sed -r "$RENAME_FMT") && eval dst_repo="$dst_repo"
+      else
+        if [[ "$PREFIX_DST" ]]; then
+          dst_repo=${PREFIX_DST}_${dst_repo}
+        else
+          dst_repo=${SRC_ACCOUNT}_${dst_repo}
+        fi
+        if [[ "$SUFFIX_DST" ]]; then
+          dst_repo=${dst_repo}_${SUFFIX_DST}
+        fi
+      fi
+    fi
 
-    create_repo $repo $DST_TOKEN || delay_exit "create failed" $repo || continue
+    create_repo $dst_repo $DST_TOKEN || delay_exit "create failed" $dst_repo || continue
 
-    update_repo || delay_exit "Update failed" $repo || continue
+    update_repo || delay_exit "Update failed" $dst_repo || continue
 
-    import_repo && success=$(($success + 1)) || delay_exit "Push failed" $repo || continue
+    import_repo && success=$(($success + 1)) || delay_exit "Push failed" $dst_repo || continue
   else
     skip=$(($skip + 1))
   fi
