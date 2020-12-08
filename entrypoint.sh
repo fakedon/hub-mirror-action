@@ -184,16 +184,12 @@ function clone_repo
     retry git clone $SRC_REPO_BASE_URL$SRC_ACCOUNT/$1.git
   fi
   cd $1
-  git remote --verbose
-  git config --unset-all http."https://github.com/".extraheader || :
-#   git remote set-url origin "https://github.com/$DST_ACCOUNT/$1.git"
-  git remote add tmp_upstream $SRC_REPO_BASE_URL$SRC_ACCOUNT/$1.git
 }
 
 function create_repo
 {
   # Auto create non-existing repo
-  has_repo=`echo $DST_REPOS | grep -F $1 | wc -l`
+  has_repo=`echo $DST_REPOS | grep -Fx $1 | wc -l`
   if [ $has_repo == 0 ]; then
     echo "Create non-exist repo..."
     if [[ "$DST_TYPE" == "github" ]]; then
@@ -202,15 +198,13 @@ function create_repo
       curl -s -X POST --header 'Content-Type: application/json;charset=UTF-8' $DST_REPO_CREATE_API -d '{"name": "'$1'","access_token": "'$2'"}' > /dev/null
     fi
   fi
-  git show-ref --verify --quiet refs/heads/$DST_TYPE && git remote rm $DST_TYPE
-  git remote add $DST_TYPE git@$DST_TYPE.com:$DST_ACCOUNT/$1.git || echo "Remote already exists."
+  git remote add $DST_TYPE git@$DST_TYPE.com:$DST_ACCOUNT/$1.git || git remote set-url git@$DST_TYPE.com:$DST_ACCOUNT/$1.git && echo "Remote already exists."
 }
 
 function update_repo
 {
   echo -e "\033[31m(1/3)\033[0m" "Updating..."
-  git fetch tmp_upstream '+refs/heads/*:refs/heads/*' --update-head-ok -p
-#   retry git pull -p tmp_upstream
+  retry git pull -p
 }
 
 function import_repo
@@ -222,7 +216,6 @@ function import_repo
   else
     retry git push $DST_TYPE refs/remotes/origin/*:refs/heads/* --tags --prune
   fi
-  git remote rm tmp_upstream
 }
 
 function _check_in_list () {
