@@ -202,9 +202,7 @@ function create_repo
       curl -s -X POST --header 'Content-Type: application/json;charset=UTF-8' $DST_REPO_CREATE_API -d '{"name": "'$1'","access_token": "'$2'"}' > /dev/null
     fi
   fi
-  if git show-ref -q refs/heads/$DST_TYPE; then
-    git remote rm $DST_TYPE
-  fi
+  git show-ref --verify --quiet refs/heads/$DST_TYPE && git remote rm $DST_TYPE
   git remote add $DST_TYPE git@$DST_TYPE.com:$DST_ACCOUNT/$1.git || echo "Remote already exists."
 }
 
