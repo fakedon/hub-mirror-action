@@ -184,6 +184,7 @@ function clone_repo
     retry git clone $SRC_REPO_BASE_URL$SRC_ACCOUNT/$1.git
   fi
   cd $1
+  # git remote | xargs -n1 git remote remove
   git remote add upstream $SRC_REPO_BASE_URL$SRC_ACCOUNT/$1.git || git remote set-url upstream $SRC_REPO_BASE_URL$SRC_ACCOUNT/$1.git
 }
 
