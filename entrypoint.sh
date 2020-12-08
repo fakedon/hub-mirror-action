@@ -216,7 +216,6 @@ function import_repo
 {
   echo -e "\033[31m(2/3)\033[0m" "Importing..."
   git remote set-head origin -d
-  ls
   if [[ "$FORCE_UPDATE" == "true" ]]; then
     retry git push -f $DST_TYPE refs/remotes/origin/*:refs/heads/* --tags --prune
   else
