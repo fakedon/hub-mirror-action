@@ -189,7 +189,7 @@ function clone_repo
 function create_repo
 {
   # Auto create non-existing repo
-  has_repo=`echo $DST_REPOS | grep -Fx $1 | wc -l`
+  has_repo=`echo $DST_REPOS | grep -F $1 | wc -l`
   if [ $has_repo == 0 ]; then
     echo "Create non-exist repo..."
     if [[ "$DST_TYPE" == "github" ]]; then
@@ -198,7 +198,7 @@ function create_repo
       curl -s -X POST --header 'Content-Type: application/json;charset=UTF-8' $DST_REPO_CREATE_API -d '{"name": "'$1'","access_token": "'$2'"}' > /dev/null
     fi
   fi
-  git remote add $DST_TYPE git@$DST_TYPE.com:$DST_ACCOUNT/$1.git || git remote set-url git@$DST_TYPE.com:$DST_ACCOUNT/$1.git && echo "Remote already exists."
+  git remote add $DST_TYPE git@$DST_TYPE.com:$DST_ACCOUNT/$1.git || git remote set-url $DST_TYPE git@$DST_TYPE.com:$DST_ACCOUNT/$1.git && echo "Remote already exists."
 }
 
 function update_repo
