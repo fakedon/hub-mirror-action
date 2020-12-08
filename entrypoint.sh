@@ -208,7 +208,7 @@ function create_repo
 function update_repo
 {
   echo -e "\033[31m(1/3)\033[0m" "Updating..."
-  retry git pull -p
+  retry git pull -p upstream
 #   git fetch upstream '+refs/heads/*:refs/heads/*' --update-head-ok
 }
 
