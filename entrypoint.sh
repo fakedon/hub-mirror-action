@@ -181,7 +181,7 @@ function clone_repo
 {
   echo -e "\033[31m(0/3)\033[0m" "Downloading..."
   if [ ! -d "$1" ]; then
-    retry git clone $SRC_REPO_BASE_URL$SRC_ACCOUNT/$1.git
+    retry git clone $SRC_REPO_BASE_URL$SRC_ACCOUNT/$1.git --origin source
   fi
   cd $1
 }
@@ -206,7 +206,8 @@ function create_repo
 function update_repo
 {
   echo -e "\033[31m(1/3)\033[0m" "Updating..."
-  retry git pull -p
+#   retry git pull -p
+  retry git fetch source '+refs/heads/*:refs/heads/*' --update-head-ok
 }
 
 function import_repo
