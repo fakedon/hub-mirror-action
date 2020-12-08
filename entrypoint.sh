@@ -208,14 +208,15 @@ function create_repo
 function update_repo
 {
   echo -e "\033[31m(1/3)\033[0m" "Updating..."
-  retry git pull -p upstream
-#   git fetch upstream '+refs/heads/*:refs/heads/*' --update-head-ok
+#   retry git pull -p upstream
+  git fetch upstream '+refs/heads/*:refs/heads/*' --update-head-ok
 }
 
 function import_repo
 {
   echo -e "\033[31m(2/3)\033[0m" "Importing..."
-  git remote set-head origin -d
+#   git remote set-head origin -d
+  ls
   if [[ "$FORCE_UPDATE" == "true" ]]; then
     retry git push -f $DST_TYPE refs/remotes/origin/*:refs/heads/* --tags --prune
   else
