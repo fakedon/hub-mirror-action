@@ -200,6 +200,7 @@ function create_repo
   fi
 #   git remote add $DST_TYPE git@$DST_TYPE.com:$DST_ACCOUNT/$1.git || echo "Remote already exists."
   git remote add $DST_TYPE git@$DST_TYPE.com:$DST_ACCOUNT/$1.git || git remote set-url $DST_TYPE git@$DST_TYPE.com:$DST_ACCOUNT/$1.git
+  git remote -v
 }
 
 function update_repo
