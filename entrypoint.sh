@@ -250,6 +250,7 @@ function git_sync
   else
     retry git push $DST_TYPE refs/remotes/origin/*:refs/heads/* --tags --prune
   fi
+  cd $CACHE_PATH && rm -rf $CACHE_PATH/*
 }
 
 
