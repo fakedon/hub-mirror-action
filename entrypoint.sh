@@ -184,7 +184,8 @@ function clone_repo
     retry git clone $SRC_REPO_BASE_URL$SRC_ACCOUNT/$1.git
   fi
   cd $1
-  git remote | xargs -n1 git remote remove
+#   git remote | xargs -n1 git remote remove
+  git remote add origin $SRC_REPO_BASE_URL$SRC_ACCOUNT/$1.git || git remote set-url origin $SRC_REPO_BASE_URL$SRC_ACCOUNT/$1.git
   git remote add upstream $SRC_REPO_BASE_URL$SRC_ACCOUNT/$1.git || git remote set-url upstream $SRC_REPO_BASE_URL$SRC_ACCOUNT/$1.git
 }
 
@@ -202,15 +203,16 @@ function create_repo
   fi
 #   git remote add $DST_TYPE git@$DST_TYPE.com:$DST_ACCOUNT/$1.git || echo "Remote already exists."
   git remote add $DST_TYPE git@$DST_TYPE.com:$DST_ACCOUNT/$1.git || git remote set-url $DST_TYPE git@$DST_TYPE.com:$DST_ACCOUNT/$1.git
-  git remote add origin git@$DST_TYPE.com:$DST_ACCOUNT/$1.git || git remote set-url origin git@$DST_TYPE.com:$DST_ACCOUNT/$1.git
+  
   git remote -v
 }
 
 function update_repo
 {
   echo -e "\033[31m(1/3)\033[0m" "Updating..."
+  retry git pull -p
 #   retry git pull -p upstream
-  git fetch upstream '+refs/heads/*:refs/heads/*' --update-head-ok
+#   git fetch upstream '+refs/heads/*:refs/heads/*' --update-head-ok
 }
 
 function import_repo
