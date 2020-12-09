@@ -226,6 +226,33 @@ function import_repo
   fi
 }
 
+function git_sync
+{
+  retry git clone $SRC_REPO_BASE_URL$SRC_ACCOUNT/$1.git --origin source && cd $1
+  git remote add $DST_TYPE git@$DST_TYPE.com:$DST_ACCOUNT/$2.git || git remote set-url $DST_TYPE git@$DST_TYPE.com:$DST_ACCOUNT/$2.git
+  
+  has_repo=`echo $DST_REPOS | grep -F $2 | wc -l`
+  if [ $has_repo == 0 ]; then
+    echo "Create non-exist repo..."
+    if [[ "$DST_TYPE" == "github" ]]; then
+      curl -s -H "Authorization: token $DST_TOKEN" --data '{"name":"'$2'"}' $DST_REPO_CREATE_API > /dev/null
+    elif [[ "$DST_TYPE" == "gitee" ]]; then
+      curl -s -X POST --header 'Content-Type: application/json;charset=UTF-8' $DST_REPO_CREATE_API -d '{"name": "'$2'","access_token": "'$DST_TOKEN'"}' > /dev/null
+    fi
+  fi
+  
+  retry git fetch source '+refs/heads/*:refs/heads/*' --update-head-ok
+  
+  git --no-pager branch -a -vv
+  
+  if [[ "$FORCE_UPDATE" == "true" ]]; then
+    retry git push -f $DST_TYPE refs/remotes/origin/*:refs/heads/* --tags --prune
+  else
+    retry git push $DST_TYPE refs/remotes/origin/*:refs/heads/* --tags --prune
+  fi
+}
+
+
 function _check_in_list () {
   local e match="$1"
   shift
@@ -273,7 +300,7 @@ for repo in $SRC_REPOS
 
     cd $CACHE_PATH
 
-    clone_repo $repo || delay_exit "clone and cd failed"  $repo || continue
+#     clone_repo $repo || delay_exit "clone and cd failed"  $repo || continue
     
     dst_repo=$repo
     if [[ "$RENAME_DST" == "true" ]]; then
@@ -290,12 +317,14 @@ for repo in $SRC_REPOS
         fi
       fi
     fi
+    
+    git_sync $repo $dst_repo || delay_exit "Sync failed" $dst_repo || continue
 
-    create_repo $dst_repo $DST_TOKEN || delay_exit "create failed" $dst_repo || continue
+#     create_repo $dst_repo $DST_TOKEN || delay_exit "create failed" $dst_repo || continue
 
-    update_repo || delay_exit "Update failed" $dst_repo || continue
+#     update_repo || delay_exit "Update failed" $dst_repo || continue
 
-    import_repo && success=$(($success + 1)) || delay_exit "Push failed" $dst_repo || continue
+#     import_repo && success=$(($success + 1)) || delay_exit "Push failed" $dst_repo || continue
   else
     skip=$(($skip + 1))
   fi
