@@ -63,7 +63,7 @@ inputs:
     description: "_Suffix added to the end of the destination repo's name"
     default: ''
   error_quit:
-    description: "quit if error happened, default false"
+    description: "Quit if error happened, default false"
     default: false
 runs:
   using: "docker"
