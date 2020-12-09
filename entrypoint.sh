@@ -334,7 +334,7 @@ echo "Total: $all, skip: $skip, successed: $success, failed: $failed."
 echo "Failed: "$FAILED_LIST
 
 if [[ "$DELAY_EXIT" == "true" ]]; then
-  if [[ "$ERROR_QUIT" == "true" ]]; then
+  if [[ "$INPUT_ERROR_QUIT" == "true" ]]; then
     exit 1
   else
     echo "notify"
