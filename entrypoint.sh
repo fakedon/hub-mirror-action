@@ -221,7 +221,7 @@ function import_repo
   if [[ "$FORCE_UPDATE" == "true" ]]; then
     retry git push -f $DST_TYPE refs/remotes/origin/*:refs/heads/* --tags --prune
   else
-    retry git push $DST_TYPE refs/remotes/origin/*:refs/heads/* --tags --prune
+    retry git push $DST_TYPE refs/remotes/origin/*:refs/heads/* --tags --prune || retry git push -f $DST_TYPE refs/remotes/origin/*:refs/heads/* --tags --prune
   fi
 }
 
@@ -247,7 +247,7 @@ function git_sync
   if [[ "$FORCE_UPDATE" == "true" ]]; then
     retry git push -f $DST_TYPE refs/remotes/origin/*:refs/heads/* --tags --prune
   else
-    retry git push $DST_TYPE refs/remotes/origin/*:refs/heads/* --tags --prune
+    retry git push $DST_TYPE refs/remotes/origin/*:refs/heads/* --tags --prune || retry git push -f $DST_TYPE refs/remotes/origin/*:refs/heads/* --tags --prune
   fi
 }
 
